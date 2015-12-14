@@ -9,7 +9,7 @@ $(function(){
         
         
 
-        getSum: function() {
+        getSum: function(city) {
             
             var BestSum={
                 day:"",
@@ -22,36 +22,38 @@ $(function(){
             
         
             model.data.forEach(function(day){
-                var c=octopus.existDay(res,day.day);
-                console.log(c);
-                if(c>-1){
-                    console.log("1");
-                    BestSum.day=day.day;
-                    if (res[c].min>day.temperature){
-                        BestSum.min=day.temperature;
-                    }
-                    else{
-                        BestSum.min=res[c].min;
-                    }
+                if(city==day.city){
+                    var c=octopus.existDay(res,day.day);
+                    // console.log(c);
+                    if(c>-1){
+                        //   console.log("1");
+                        BestSum.day=day.day;
+                        if (res[c].min>day.temperature){
+                            BestSum.min=day.temperature;
+                        }
+                        else{
+                            BestSum.min=res[c].min;
+                        }
                     
-                    if (res[c].max<day.temperature){
-                        BestSum.max=day.temperature;
-                    }
-                    else{
-                        BestSum.max=res[c].max;
-                    }
+                        if (res[c].max<day.temperature){
+                            BestSum.max=day.temperature;
+                        }
+                        else{
+                            BestSum.max=res[c].max;
+                        }
                     
                   
-                    BestSum.condition=day.condition;
-                    res[c]=jQuery.extend(true, {}, BestSum);
-                }
-                else{
-                    console.log("2");
-                    BestSum.day=day.day;
-                    BestSum.min=day.temperature;
-                    BestSum.max=day.temperature;
-                    BestSum.condition=day.condition;
-                    res.push(jQuery.extend(true, {}, BestSum));
+                        BestSum.condition=day.condition;
+                        res[c]=jQuery.extend(true, {}, BestSum);
+                    }
+                    else{
+                        //  console.log("2");
+                        BestSum.day=day.day;
+                        BestSum.min=day.temperature;
+                        BestSum.max=day.temperature;
+                        BestSum.condition=day.condition;
+                        res.push(jQuery.extend(true, {}, BestSum));
+                    }
                 }
             });
             
@@ -62,9 +64,9 @@ $(function(){
             var index=0;
             var flag=-1;
             res.forEach(function(obj){
-                console.log("c: "+obj.day+" "+day);
+                // console.log("c: "+obj.day+" "+day);
                 if(obj.day==day){
-                    console.log("aaaa: "+index);
+                    // console.log("aaaa: "+index);
                     
                     flag=index;
                     
@@ -73,7 +75,7 @@ $(function(){
             });
             
             
-                return flag;
+            return flag;
             
         },
 
@@ -85,9 +87,14 @@ $(function(){
 
     var view = {
         init: function() {
-            
+           
+           
+            $("#btn-filter").click(function(){
+         
+                view.render(octopus.getSum($('.options').children().val()));
+            });
             this.res = $('#summary');
-            view.render(octopus.getSum());
+           
         },
         render: function(Sum){
             var htmlStr = '';
